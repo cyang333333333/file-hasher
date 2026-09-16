@@ -1,8 +1,12 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.io.BufferedReader;
 import java.io.FileReader;
+
 
 
 public class FileHasher {
@@ -69,6 +73,53 @@ public class FileHasher {
         } catch (IOException e) {
             System.out.println("cant");
         }
+
+        try {
+            System.out.println(hashFile("JavaFileSystem/notes.txt"));
+        } catch (Exception e) {
+            System.out.println("cant");
+        }
+        try {
+            System.out.println(hashFile("JavaFileSystem/data.txt"));
+        } catch (Exception e) {
+            System.out.println("cant");
+        }
+        try {
+            System.out.println(hashFile("JavaFileSystem/log.txt"));
+        } catch (Exception e) {
+            System.out.println("cant");
+        }
+        try {
+            System.out.println(hashFile("JavaFileSystem/Backup/backup.txt"));
+        } catch (Exception e) {
+            System.out.println("cant");
+        }
         
+    }
+
+    public static String hashFile(String filePath) throws IOException {
+        String str = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            str = reader.readLine();
+        } catch (IOException e) {
+            System.out.println("cant");
+        }
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(str.getBytes());
+            StringBuilder hexString = new StringBuilder();
+                for (byte b : encodedHash) {
+                    String hex = String.format("%02x", b);
+                    if (hex.length() == 1) {
+                        hexString.append('0');
+                    }
+                    hexString.append(hex);
+                }
+            return hexString.toString();
+        } catch (Exception e) {
+            System.out.println("cant missing file");
+            return null;
+        }
     }
 }
